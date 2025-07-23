@@ -2,88 +2,156 @@
   "version": 2.0,
   "questions": [
     {
-      "question": "After observing the Tomasulo simulation, which factor most significantly limits instruction-level parallelism?",
+      "question": "After using the simulator, what did you observe about the register alias table when multiple instructions write to the same register?",
       "answers": {
-        "a": "The number of available reservation stations",
-        "b": "The speed of the Common Data Bus",
-        "c": "True data dependencies (RAW hazards) between instructions",
-        "d": "The complexity of the register renaming logic"
+        "a": "The system generates an error message",
+        "b": "Only the first instruction proceeds",
+        "c": "Each instruction gets assigned a different reservation station tag",
+        "d": "All instructions stall until resolved"
       },
       "explanations": {
-        "a": "Partially correct but not the most significant factor. Reservation stations cause structural hazards.",
-        "b": "Incorrect. The CDB bandwidth is typically not the primary bottleneck.",
-        "c": "Correct. True data dependencies create unavoidable dependencies that limit how much parallelism can be extracted from instruction sequences.",
-        "d": "Incorrect. Register renaming complexity doesn't limit ILP; it enables it."
+        "a": "Incorrect. The Tomasulo algorithm handles this situation transparently.",
+        "b": "Incorrect. All instructions can proceed thanks to register renaming.",
+        "c": "Correct. Register renaming assigns different reservation station tags to eliminate false dependencies (WAW hazards).",
+        "d": "Incorrect. Register renaming prevents stalling in this situation."
       },
       "correctAnswer": "c",
+      "difficulty": "beginner"
+    },
+    {
+      "question": "Based on your simulation experience, what happens when an instruction's operands become available?",
+      "answers": {
+        "a": "The instruction immediately completes execution",
+        "b": "The instruction becomes ready and can begin execution when a functional unit is free",
+        "c": "The instruction is removed from the reservation station",
+        "d": "The instruction broadcasts its result on the CDB"
+      },
+      "explanations": {
+        "a": "Incorrect. The instruction still needs time to execute.",
+        "b": "Correct. When operands are ready, the instruction becomes eligible for execution but must wait for an available functional unit.",
+        "c": "Incorrect. The instruction stays in the reservation station until completion.",
+        "d": "Incorrect. Broadcasting happens after execution completes."
+      },
+      "correctAnswer": "b",
+      "difficulty": "beginner"
+    },
+    {
+      "question": "In the simulation, what visual indicator shows that an instruction is waiting for operands?",
+      "answers": {
+        "a": "The instruction appears in red color",
+        "b": "Reservation station tags appear in the Qj/Qk fields instead of values",
+        "c": "The instruction shows 'BLOCKED' status",
+        "d": "The functional unit indicator blinks"
+      },
+      "explanations": {
+        "a": "Incorrect. Color coding is not the primary indicator.",
+        "b": "Correct. When operands are not ready, the reservation station shows tags (like 'Add1', 'Mul2') in the Qj/Qk fields instead of actual values.",
+        "c": "Incorrect. There is no 'BLOCKED' status display.",
+        "d": "Incorrect. Functional units don't use blinking indicators."
+      },
+      "correctAnswer": "b",
+      "difficulty": "beginner"
+    },
+    {
+      "question": "From your simulation experience, what did you observe about instruction completion order?",
+      "answers": {
+        "a": "Instructions always complete in program order",
+        "b": "Instructions complete in reverse program order",
+        "c": "Instructions complete out-of-order based on operand availability and execution time",
+        "d": "Instruction completion order is random"
+      },
+      "explanations": {
+        "a": "Incorrect. This would be in-order execution, not the Tomasulo algorithm.",
+        "b": "Incorrect. There's no systematic reverse ordering.",
+        "c": "Correct. Instructions complete as soon as their execution finishes, which depends on operand availability and execution latency, resulting in out-of-order completion.",
+        "d": "Incorrect. The completion order follows logical rules based on dependencies and timing."
+      },
+      "correctAnswer": "c",
+      "difficulty": "intermediate"
+    },
+    {
+      "question": "What performance metric did you notice improved most with the Tomasulo algorithm?",
+      "answers": {
+        "a": "Individual instruction execution time",
+        "b": "Memory access latency",
+        "c": "Overall instruction throughput (IPC - Instructions Per Cycle)",
+        "d": "Cache hit rate"
+      },
+      "explanations": {
+        "a": "Incorrect. Individual instruction latencies remain the same.",
+        "b": "Incorrect. Memory latency is not directly affected by instruction scheduling.",
+        "c": "Correct. The Tomasulo algorithm improves instruction throughput by enabling parallel execution of independent instructions, increasing IPC.",
+        "d": "Incorrect. Cache performance is independent of instruction scheduling."
+      },
+      "correctAnswer": "c",
+      "difficulty": "intermediate"
+    },
+    {
+      "question": "During simulation, when did you observe the Common Data Bus (CDB) being most active?",
+      "answers": {
+        "a": "When instructions are being issued to reservation stations",
+        "b": "When multiple instructions complete execution simultaneously",
+        "c": "When the processor is idle",
+        "d": "When instructions are waiting for operands"
+      },
+      "explanations": {
+        "a": "Incorrect. Issuing instructions doesn't cause CDB activity.",
+        "b": "Correct. The CDB broadcasts results when instructions complete execution, so it's most active when multiple instructions finish around the same time.",
+        "c": "Incorrect. Idle processors generate no CDB activity.",
+        "d": "Incorrect. Waiting for operands doesn't generate CDB broadcasts."
+      },
+      "correctAnswer": "b",
+      "difficulty": "intermediate"
+    },
+    {
+      "question": "What did you observe about reservation station utilization during long dependency chains?",
+      "answers": {
+        "a": "Reservation stations remain mostly empty",
+        "b": "Only one type of reservation station is used",
+        "c": "Reservation stations fill up with waiting instructions",
+        "d": "Reservation stations are bypassed entirely"
+      },
+      "explanations": {
+        "a": "Incorrect. Long dependency chains cause instructions to queue up.",
+        "b": "Incorrect. Different instruction types use different reservation station types.",
+        "c": "Correct. When instructions depend on previous results, they accumulate in reservation stations waiting for their operands, leading to higher utilization.",
+        "d": "Incorrect. All instructions must go through reservation stations in the Tomasulo algorithm."
+      },
+      "correctAnswer": "c",
+      "difficulty": "intermediate"
+    },
+    {
+      "question": "After experimenting with the simulator, which factor most significantly limits instruction-level parallelism?",
+      "answers": {
+        "a": "Number of reservation stations available",
+        "b": "True data dependencies (RAW hazards) between instructions",
+        "c": "Speed of the Common Data Bus",
+        "d": "Complexity of the register renaming hardware"
+      },
+      "explanations": {
+        "a": "Incorrect. While limited stations cause structural hazards, they're not the primary ILP limitation.",
+        "b": "Correct. True data dependencies create unavoidable sequential constraints that fundamentally limit how many instructions can execute in parallel.",
+        "c": "Incorrect. CDB speed is typically not the primary bottleneck.",
+        "d": "Incorrect. Register renaming enables parallelism rather than limiting it."
+      },
+      "correctAnswer": "b",
       "difficulty": "advanced"
     },
     {
-      "question": "Based on your simulation experience, what happens when an instruction in a reservation station receives its missing operand via the CDB?",
+      "question": "Based on your simulation analysis, what would be the most effective way to improve performance in a workload with frequent structural hazards?",
       "answers": {
-        "a": "The instruction immediately begins execution",
-        "b": "The instruction becomes ready for execution and waits for a free functional unit",
-        "c": "The instruction is moved to a different reservation station",
-        "d": "The instruction updates its result and broadcasts on the CDB"
+        "a": "Increase the number of reservation stations",
+        "b": "Reduce instruction execution latencies",
+        "c": "Improve branch prediction accuracy",
+        "d": "Increase memory bandwidth"
       },
       "explanations": {
-        "a": "Incorrect. The instruction must also have a free functional unit available.",
-        "b": "Correct. Once all operands are available, the instruction becomes ready but still needs an available functional unit to begin execution.",
-        "c": "Incorrect. Instructions stay in their assigned reservation stations.",
-        "d": "Incorrect. Receiving operands doesn't cause broadcasting; completing execution does."
+        "a": "Correct. Structural hazards occur when hardware resources (like reservation stations) are insufficient. Adding more reservation stations directly addresses this bottleneck.",
+        "b": "Incorrect. While helpful for overall performance, this doesn't address structural hazards specifically.",
+        "c": "Incorrect. Branch prediction doesn't solve resource availability issues.",
+        "d": "Incorrect. Memory bandwidth doesn't affect reservation station availability."
       },
-      "correctAnswer": "b",
-      "difficulty": "intermediate"
-    },
-    {
-      "question": "In your simulation, what did you observe when multiple instructions write to the same architectural register?",
-      "answers": {
-        "a": "The processor stalls until the first write completes",
-        "b": "Only the last issued instruction is allowed to proceed",
-        "c": "Each write gets a different reservation station tag, eliminating the false dependency",
-        "d": "The processor raises an exception for the conflicting writes"
-      },
-      "explanations": {
-        "a": "Incorrect. The Tomasulo algorithm doesn't stall for WAW hazards.",
-        "b": "Incorrect. All instructions proceed; register renaming handles the conflict.",
-        "c": "Correct. Register renaming assigns different reservation station tags, allowing both writes to proceed independently.",
-        "d": "Incorrect. WAW hazards are handled transparently by register renaming."
-      },
-      "correctAnswer": "c",
-      "difficulty": "intermediate"
-    },
-    {
-      "question": "What performance metric did you notice improved most with out-of-order execution compared to in-order execution?",
-      "answers": {
-        "a": "Single instruction execution time",
-        "b": "Cache hit rate",
-        "c": "Overall instruction throughput (IPC)",
-        "d": "Branch prediction accuracy"
-      },
-      "explanations": {
-        "a": "Incorrect. Individual instruction execution times remain the same.",
-        "b": "Incorrect. Cache performance is independent of instruction scheduling.",
-        "c": "Correct. Out-of-order execution increases instruction throughput by overlapping independent operations and utilizing functional units more efficiently.",
-        "d": "Incorrect. Branch prediction is orthogonal to the Tomasulo algorithm."
-      },
-      "correctAnswer": "c",
-      "difficulty": "intermediate"
-    },
-    {
-      "question": "During the simulation, when would you expect to see the highest utilization of reservation stations?",
-      "answers": {
-        "a": "When executing independent instructions with no dependencies",
-        "b": "When executing a long chain of dependent instructions",
-        "c": "When executing only memory operations",
-        "d": "When the functional units have very short execution latencies"
-      },
-      "explanations": {
-        "a": "Incorrect. Independent instructions execute quickly and don't accumulate in reservation stations.",
-        "b": "Correct. Dependent instructions queue up in reservation stations waiting for their operands, leading to high utilization.",
-        "c": "Incorrect. Memory operations alone wouldn't fill all types of reservation stations.",
-        "d": "Incorrect. Short latencies would actually reduce reservation station utilization."
-      },
-      "correctAnswer": "b",
+      "correctAnswer": "a",
       "difficulty": "advanced"
     }
   ]

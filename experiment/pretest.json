@@ -36,6 +36,23 @@
       "difficulty": "beginner"
     },
     {
+      "question": "What does register renaming achieve in the Tomasulo algorithm?",
+      "answers": {
+        "a": "It increases the number of architectural registers",
+        "b": "It eliminates false dependencies between instructions",
+        "c": "It speeds up memory access operations",
+        "d": "It reduces the number of functional units needed"
+      },
+      "explanations": {
+        "a": "Incorrect. Register renaming doesn't change the number of architectural registers.",
+        "b": "Correct. Register renaming eliminates false dependencies (WAR and WAW hazards) by mapping architectural registers to reservation station tags.",
+        "c": "Incorrect. Register renaming doesn't directly affect memory access speed.",
+        "d": "Incorrect. Register renaming doesn't reduce functional unit requirements."
+      },
+      "correctAnswer": "b",
+      "difficulty": "beginner"
+    },
+    {
       "question": "Which types of hazards does register renaming eliminate?",
       "answers": {
         "a": "Only Read-After-Write (RAW) hazards",
@@ -87,23 +104,6 @@
       "difficulty": "intermediate"
     },
     {
-      "question": "What was the original motivation for developing the Tomasulo algorithm at IBM?",
-      "answers": {
-        "a": "To support multiprocessor systems",
-        "b": "To handle floating-point operations with variable execution times",
-        "c": "To reduce power consumption in processors",
-        "d": "To improve cache hit rates"
-      },
-      "explanations": {
-        "a": "Incorrect. The algorithm was designed for single-processor performance.",
-        "b": "Correct. The IBM 360/91 needed to handle floating-point operations with widely varying execution times efficiently.",
-        "c": "Incorrect. Power consumption was not a primary concern in the 1960s.",
-        "d": "Incorrect. The focus was on instruction scheduling, not cache performance."
-      },
-      "correctAnswer": "b",
-      "difficulty": "advanced"
-    },
-    {
       "question": "Which of the following best describes a structural hazard in the context of the Tomasulo algorithm?",
       "answers": {
         "a": "When two instructions try to write to the same register",
@@ -121,10 +121,27 @@
       "difficulty": "intermediate"
     },
     {
+      "question": "What was the original motivation for developing the Tomasulo algorithm at IBM?",
+      "answers": {
+        "a": "To support multiprocessor systems",
+        "b": "To handle floating-point operations with variable execution times",
+        "c": "To reduce power consumption in processors",
+        "d": "To improve cache hit rates"
+      },
+      "explanations": {
+        "a": "Incorrect. The algorithm was designed for single-processor performance.",
+        "b": "Correct. The IBM 360/91 needed to handle floating-point operations with widely varying execution times efficiently.",
+        "c": "Incorrect. Power consumption was not a primary concern in the 1960s.",
+        "d": "Incorrect. The focus was on instruction scheduling, not cache performance."
+      },
+      "correctAnswer": "b",
+      "difficulty": "advanced"
+    },
+    {
       "question": "How does the Tomasulo algorithm handle Write-After-Write (WAW) hazards?",
       "answers": {
         "a": "By stalling the pipeline until the first write completes",
-        "b": "By using register renaming to assign different physical registers",
+        "b": "By using register renaming to assign different reservation station tags",
         "c": "By executing writes in program order only",
         "d": "By canceling the earlier write operation"
       },
