@@ -2,38 +2,157 @@
   "version": 2.0,
   "questions": [
     {
-      "question": "This is a Sample Question 1?",
+      "question": "What is the primary purpose of the Tomasulo algorithm?",
       "answers": {
-        "a": "answer1",
-        "b": "answer2",
-        "c": "answer3",
-        "d": "answer4"
+        "a": "To improve cache performance in multiprocessor systems",
+        "b": "To enable out-of-order execution while maintaining program correctness",
+        "c": "To reduce the number of pipeline stages in a processor",
+        "d": "To optimize branch prediction accuracy"
       },
       "explanations": {
-        "a": "Explanation 1  <a href='www.google.com'>here</a>",
-        "b": "Explanation 2",
-        "c": "Explanation 2",
-        "d": "Explanation 2"
+        "a": "Incorrect. The Tomasulo algorithm is focused on instruction scheduling, not cache performance.",
+        "b": "Correct. The Tomasulo algorithm enables dynamic scheduling and out-of-order execution while preserving program semantics through register renaming.",
+        "c": "Incorrect. The algorithm doesn't aim to reduce pipeline stages.",
+        "d": "Incorrect. Branch prediction is a separate technique from dynamic scheduling."
+      },
+      "correctAnswer": "b",
+      "difficulty": "beginner"
+    },
+    {
+      "question": "What are reservation stations used for in the Tomasulo algorithm?",
+      "answers": {
+        "a": "To store instructions waiting for execution and implement register renaming",
+        "b": "To cache frequently accessed data from memory",
+        "c": "To predict which branches will be taken",
+        "d": "To manage virtual memory translation"
+      },
+      "explanations": {
+        "a": "Correct. Reservation stations buffer instructions waiting for their operands and provide the mechanism for register renaming.",
+        "b": "Incorrect. Reservation stations are not data caches.",
+        "c": "Incorrect. Branch prediction is handled by different hardware.",
+        "d": "Incorrect. Virtual memory translation is handled by the MMU."
       },
       "correctAnswer": "a",
       "difficulty": "beginner"
     },
     {
-      "question": "This is a Sample Question 2?",
+      "question": "What does register renaming achieve in the Tomasulo algorithm?",
       "answers": {
-        "a": "answer1",
-        "b": "answer2",
-        "c": "answer3",
-        "d": "answer4"
+        "a": "It increases the number of architectural registers",
+        "b": "It eliminates false dependencies between instructions",
+        "c": "It speeds up memory access operations",
+        "d": "It reduces the number of functional units needed"
       },
       "explanations": {
-        "a": "Explanation 1  <a href='www.google.com'>here</a>",
-        "b": "Explanation 2",
-        "c": "Explanation 2",
-        "d": "Explanation 2"
+        "a": "Incorrect. Register renaming doesn't change the number of architectural registers.",
+        "b": "Correct. Register renaming eliminates false dependencies (WAR and WAW hazards) by mapping architectural registers to reservation station tags.",
+        "c": "Incorrect. Register renaming doesn't directly affect memory access speed.",
+        "d": "Incorrect. Register renaming doesn't reduce functional unit requirements."
+      },
+      "correctAnswer": "b",
+      "difficulty": "beginner"
+    },
+    {
+      "question": "Which types of hazards does register renaming eliminate?",
+      "answers": {
+        "a": "Only Read-After-Write (RAW) hazards",
+        "b": "Only Write-After-Read (WAR) hazards",
+        "c": "Both Write-After-Read (WAR) and Write-After-Write (WAW) hazards",
+        "d": "All types of data hazards including RAW"
+      },
+      "explanations": {
+        "a": "Incorrect. RAW hazards are true dependencies that cannot be eliminated.",
+        "b": "Incorrect. Register renaming eliminates both WAR and WAW hazards.",
+        "c": "Correct. Register renaming eliminates false dependencies (WAR and WAW) while preserving true dependencies (RAW).",
+        "d": "Incorrect. RAW hazards represent true data dependencies that must be preserved."
       },
       "correctAnswer": "c",
-      "difficulty": "beginner"
+      "difficulty": "intermediate"
+    },
+    {
+      "question": "What is the role of the Common Data Bus (CDB) in the Tomasulo algorithm?",
+      "answers": {
+        "a": "To transfer instructions from memory to the processor",
+        "b": "To broadcast computed results to all reservation stations simultaneously",
+        "c": "To handle cache misses and memory operations",
+        "d": "To coordinate between multiple processor cores"
+      },
+      "explanations": {
+        "a": "Incorrect. The CDB is not used for instruction fetching.",
+        "b": "Correct. The CDB broadcasts results from functional units to all reservation stations that might be waiting for those values.",
+        "c": "Incorrect. Memory operations are handled by load/store units, not the CDB directly.",
+        "d": "Incorrect. The CDB operates within a single processor core."
+      },
+      "correctAnswer": "b",
+      "difficulty": "intermediate"
+    },
+    {
+      "question": "In the Tomasulo algorithm, when can an instruction begin execution?",
+      "answers": {
+        "a": "As soon as it is issued to a reservation station",
+        "b": "Only after all previous instructions have completed",
+        "c": "When all of its operands are available (no pending dependencies)",
+        "d": "After a fixed number of clock cycles"
+      },
+      "explanations": {
+        "a": "Incorrect. Instructions must wait for their operands to become available.",
+        "b": "Incorrect. This would be in-order execution, not out-of-order.",
+        "c": "Correct. Instructions can begin execution as soon as all their operands are ready, enabling out-of-order execution.",
+        "d": "Incorrect. Execution timing depends on operand availability, not fixed delays."
+      },
+      "correctAnswer": "c",
+      "difficulty": "intermediate"
+    },
+    {
+      "question": "Which of the following best describes a structural hazard in the context of the Tomasulo algorithm?",
+      "answers": {
+        "a": "When two instructions try to write to the same register",
+        "b": "When an instruction needs a result that hasn't been computed yet",
+        "c": "When there are no available reservation stations for a new instruction",
+        "d": "When the branch predictor makes an incorrect prediction"
+      },
+      "explanations": {
+        "a": "Incorrect. This describes a WAW hazard, which is eliminated by register renaming.",
+        "b": "Incorrect. This describes a RAW hazard or true dependency.",
+        "c": "Correct. A structural hazard occurs when hardware resources (like reservation stations) are not available.",
+        "d": "Incorrect. Branch mispredictions are control hazards, not structural hazards."
+      },
+      "correctAnswer": "c",
+      "difficulty": "intermediate"
+    },
+    {
+      "question": "What was the original motivation for developing the Tomasulo algorithm at IBM?",
+      "answers": {
+        "a": "To support multiprocessor systems",
+        "b": "To handle floating-point operations with variable execution times",
+        "c": "To reduce power consumption in processors",
+        "d": "To improve cache hit rates"
+      },
+      "explanations": {
+        "a": "Incorrect. The algorithm was designed for single-processor performance.",
+        "b": "Correct. The IBM 360/91 needed to handle floating-point operations with widely varying execution times efficiently.",
+        "c": "Incorrect. Power consumption was not a primary concern in the 1960s.",
+        "d": "Incorrect. The focus was on instruction scheduling, not cache performance."
+      },
+      "correctAnswer": "b",
+      "difficulty": "advanced"
+    },
+    {
+      "question": "How does the Tomasulo algorithm handle Write-After-Write (WAW) hazards?",
+      "answers": {
+        "a": "By stalling the pipeline until the first write completes",
+        "b": "By using register renaming to assign different reservation station tags",
+        "c": "By executing writes in program order only",
+        "d": "By canceling the earlier write operation"
+      },
+      "explanations": {
+        "a": "Incorrect. Stalling would reduce performance and is not necessary.",
+        "b": "Correct. Register renaming ensures that different writes use different reservation station tags, eliminating the false dependency.",
+        "c": "Incorrect. This would prevent out-of-order execution benefits.",
+        "d": "Incorrect. Both writes may be legitimate and needed by different instructions."
+      },
+      "correctAnswer": "b",
+      "difficulty": "advanced"
     }
   ]
 }
