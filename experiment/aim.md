@@ -1,5 +1,3 @@
-### Aim of the experiment
-
 To understand and simulate the Tomasulo algorithm for dynamic scheduling in out-of-order execution processors. This experiment aims to:
 
 1. **Demonstrate Dynamic Scheduling**: Understand how the Tomasulo algorithm enables out-of-order execution while maintaining program correctness through register renaming and reservation stations.

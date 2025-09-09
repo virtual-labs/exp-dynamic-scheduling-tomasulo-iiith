@@ -1,10 +1,9 @@
-## Theory
-
 ### Introduction to Dynamic Scheduling
 
 In modern processors, instruction throughput can be significantly improved by executing instructions out of their original program order. **Dynamic Scheduling** is a technique that allows the processor to rearrange instruction execution at runtime to minimize pipeline stalls and maximize resource utilization.
 
 The main challenges in out-of-order execution are:
+
 - **True Dependencies (RAW)**: A later instruction needs the result of an earlier instruction
 - **Anti-dependencies (WAR)**: A later instruction writes to a register that an earlier instruction reads
 - **Output Dependencies (WAW)**: Two instructions write to the same register
@@ -16,12 +15,14 @@ The **Tomasulo Algorithm**, developed by Robert Tomasulo at IBM in 1967 for the 
 #### Key Components
 
 1. **Reservation Stations**
+
    - Buffer instructions waiting for execution
    - Store operand values or tags indicating where values will come from
    - Enable register renaming to eliminate false dependencies
    - Different types for different functional units (e.g., Add/Sub, Multiply/Divide, Load/Store)
 
 2. **Common Data Bus (CDB)**
+
    - Broadcasts results to all reservation stations simultaneously
    - Updates waiting instructions with computed values
    - Maintains data consistency across the system
@@ -34,12 +35,14 @@ The **Tomasulo Algorithm**, developed by Robert Tomasulo at IBM in 1967 for the 
 #### Instruction Processing Stages
 
 1. **Issue Stage**
+
    - Decode instruction and check for available reservation station
    - If structural hazard exists (no free reservation station), stall
    - Allocate reservation station and update register alias table
    - Read available operands or record tags for unavailable ones
 
 2. **Execute Stage**
+
    - Monitor common data bus for operand values
    - When all operands are available, begin execution
    - Execute instruction in the appropriate functional unit
@@ -64,16 +67,19 @@ The Tomasulo algorithm implements **register renaming** through reservation stat
 Typical implementation includes multiple functional units:
 
 1. **Integer Units**
+
    - ADD/SUB operations
    - Fast execution (1-2 cycles)
    - Multiple units for parallel execution
 
 2. **Floating-Point Units**
+
    - FADD/FSUB operations
    - Moderate execution latency (3-4 cycles)
    - Pipelined for high throughput
 
 3. **Multiply/Divide Units**
+
    - FMUL/FDIV operations
    - High execution latency (10-20+ cycles)
    - May be non-pipelined (especially divide)
@@ -98,6 +104,7 @@ Each reservation station can be in one of several states:
 #### Operand Handling
 
 Operands in reservation stations can be:
+
 - **Value**: Actual data value available immediately
 - **Tag**: Reference to reservation station that will produce the value
 - **Register**: Direct register reference (for architectural state)
@@ -107,6 +114,7 @@ Operands in reservation stations can be:
 **Structural Hazards**: Resolved by stalling issue when no reservation stations are available
 
 **Data Hazards**:
+
 - **RAW**: Resolved by waiting for operand values on CDB
 - **WAR**: Eliminated through early operand reading and register renaming
 - **WAW**: Resolved through register renaming (latest write wins)
@@ -114,12 +122,14 @@ Operands in reservation stations can be:
 ### Performance Implications
 
 **Advantages:**
+
 - Enables out-of-order execution without complex compiler analysis
 - Dynamically adapts to runtime dependencies
 - High instruction throughput when sufficient resources available
 - Elegant handling of variable-latency operations
 
 **Disadvantages:**
+
 - Complex hardware implementation
 - Requires significant silicon area for reservation stations
 - Broadcast bus (CDB) can become bandwidth bottleneck
@@ -135,6 +145,7 @@ The Tomasulo algorithm forms the foundation for modern superscalar processors:
 - **Memory Disambiguation**: Advanced load/store queue management
 
 Understanding Tomasulo is essential for:
+
 - Computer architecture design
 - Performance optimization
 - Compiler development
