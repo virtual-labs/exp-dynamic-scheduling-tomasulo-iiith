@@ -1,5 +1,31 @@
 Follow these step-by-step instructions to understand and explore the Tomasulo Algorithm for dynamic scheduling using the interactive simulator.
 
+### Step 0: Configure Execution Latencies
+
+1. **Understanding Latency Configuration**
+
+   - When you first load the simulator, you'll be in **Configuration Mode**
+   - This mode allows you to customize how many cycles each instruction type takes to execute
+   - Different latencies help demonstrate the benefits of out-of-order execution
+
+2. **Set Custom Latencies**
+
+   - **Arithmetic Operations** (ADD, SUB): Default 2 cycles
+   - **Multiply/Divide Operations** (MUL, DIV): Default 10 and 20 cycles respectively
+   - **Memory Operations** (LOAD, STORE): Default 3 cycles each
+   - Adjust any value between 1-100 cycles to experiment with different scenarios
+
+3. **Start the Simulation**
+   - Once you've configured the latencies to your preference, click **"Start Simulation"**
+   - This switches to **Simulation Mode** where latencies become read-only
+   - You can now begin issuing and executing instructions
+
+4. **Latency Configuration Tips**
+   - Use higher latencies for MUL/DIV to better observe out-of-order execution
+   - Try extreme values (e.g., MUL = 50 cycles) to see dramatic reordering
+   - Compare performance with different latency settings
+   - Click **"Reset"** anytime to return to Configuration Mode and adjust settings
+
 ### Step 1: Understanding the Interface
 
 1. **Observe the Initial State**
@@ -141,8 +167,12 @@ Follow these step-by-step instructions to understand and explore the Tomasulo Al
    - Analyze instruction scheduling decisions
 
 3. **Performance Tuning**
-   - Experiment with different numbers of reservation stations
-   - Vary functional unit counts and latencies
+   - Return to Configuration Mode by clicking **"Stop Simulation"** or **"Reset"**
+   - Experiment with different latency settings:
+     - Try higher multiply/divide latencies (e.g., MUL=20, DIV=40)
+     - Test with uniform latencies (all operations = 5 cycles)
+     - Compare asymmetric vs symmetric latency configurations
+   - Restart simulation with new settings and compare performance
    - Study the trade-offs in hardware complexity vs. performance
 
 ### Step 9: Comparative Analysis

@@ -23,6 +23,82 @@
             </div>
         </section>
 
+        <!-- Mode Control Panel -->
+        <section class="section">
+            <div class="container">
+                <div class="notification is-primary">
+                    <div class="level">
+                        <div class="level-left">
+                            <div class="level-item">
+                                <div>
+                                    <p class="heading">Current Mode</p>
+                                    <p class="title is-5" id="mode-indicator">Configuration Mode</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="level-right">
+                            <div class="level-item">
+                                <button id="start-simulation-btn" class="button is-success is-large">
+                                    <i class="fas fa-play"></i>&nbsp;Start Simulation
+                                </button>
+                                <button id="stop-simulation-btn" class="button is-danger is-large" style="display: none;">
+                                    <i class="fas fa-stop"></i>&nbsp;Stop Simulation
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Configuration Mode Panel -->
+        <div id="config-mode-panel">
+            <!-- Latency Configuration -->
+            <section class="section">
+                <div class="container">
+                    <div class="box">
+                        <h3 class="title is-4 has-text-centered">⚙️ Execution Latency Configuration</h3>
+                        <p class="subtitle is-6 has-text-centered">Configure how many cycles each instruction type takes to execute</p>
+                        <div id="latency-config-edit">
+                            <!-- Latency configuration will be rendered here -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Quick Start Guide -->
+            <section class="section">
+                <div class="container">
+                    <div class="box">
+                        <h3 class="title is-4 has-text-centered">📚 Quick Start Guide</h3>
+                        <div class="columns">
+                            <div class="column">
+                                <div class="content">
+                                    <h4 class="subtitle is-5">1. Configure Latencies</h4>
+                                    <p>Set execution latencies for different instruction types above. These determine how many cycles each operation takes.</p>
+                                </div>
+                            </div>
+                            <div class="column">
+                                <div class="content">
+                                    <h4 class="subtitle is-5">2. Start Simulation</h4>
+                                    <p>Click "Start Simulation" to begin. You'll then be able to issue instructions and observe the Tomasulo algorithm in action.</p>
+                                </div>
+                            </div>
+                            <div class="column">
+                                <div class="content">
+                                    <h4 class="subtitle is-5">3. Issue & Execute</h4>
+                                    <p>Add instructions, then use "Step" to advance one cycle or "Run" for automatic execution.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- Simulation Mode Panel -->
+        <div id="simulation-mode-panel" style="display: none;">
+
         <!-- 2. How to Use This Simulator -->
         <section class="section">
             <div class="container">
@@ -401,6 +477,21 @@
             </div>
         </section>
 
+        <!-- Latency Configuration (Simulation Mode - Read Only) -->
+        <section class="section">
+            <div class="container">
+                <div class="box">
+                    <h3 class="title is-4 has-text-centered">⚙️ Execution Latency Configuration</h3>
+                    <p class="subtitle is-6 has-text-centered">Current latency settings (read-only during simulation)</p>
+                    <div id="latency-config-simulation">
+                        <!-- Latency configuration will be rendered here (read-only) -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        </div> <!-- End simulation-mode-panel -->
+
         <!-- 9. Performance Analysis -->
         <section class="section">
             <div class="container">
@@ -452,6 +543,9 @@
         </section>
     </div>
 
+    <!-- Scripts -->
+    <script src="./js/utils/types.js"></script>
+    <script src="./js/components/LatencyConfig.js"></script>
     <script src="./js/main.js"></script>
 </body>
 </html>

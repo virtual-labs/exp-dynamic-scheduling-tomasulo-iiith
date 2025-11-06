@@ -5,7 +5,9 @@ class TomasuloSimulator {
     constructor() {
         this.initializeSystem();
         this.setupEventListeners();
+        this.initializeLatencyConfig();
         this.updateDisplay();
+        this.setMode('config'); // Start in config mode
     }
 
     initializeSystem() {
@@ -16,6 +18,7 @@ class TomasuloSimulator {
         this.instructionsCompleted = 0;
         this.isRunning = false;
         this.runInterval = null;
+        this.simulationMode = 'config'; // 'config' or 'simulation'
 
         // Register file (R0-R7) with initial values
         this.registers = {
@@ -110,15 +113,75 @@ class TomasuloSimulator {
             wawEliminated: 0
         };
 
-        // Execution latencies
-        this.latencies = {
-            ADD: 2,
-            SUB: 2,
-            MUL: 10,
-            DIV: 20,
-            LOAD: 3,
-            STORE: 3
-        };
+        // Execution latencies - use defaults from types.js
+        this.latencies = { ...DEFAULT_LATENCIES };
+    }
+
+    initializeLatencyConfig() {
+        // Initialize latency configuration components
+        this.latencyConfigEdit = new LatencyConfig(
+            'latency-config-edit',
+            this,
+            (result) => this.handleLatencyChange(result)
+        );
+        
+        this.latencyConfigSimulation = new LatencyConfig(
+            'latency-config-simulation',
+            this,
+            () => {} // No-op for simulation mode
+        );
+    }
+
+    handleLatencyChange(result) {
+        if (result.success) {
+            this.showMessage(result.message, 'success');
+        } else {
+            this.showMessage(result.message, 'error');
+        }
+    }
+
+    setMode(mode) {
+        this.simulationMode = mode;
+        const configPanel = document.getElementById('config-mode-panel');
+        const simulationPanel = document.getElementById('simulation-mode-panel');
+        const startBtn = document.getElementById('start-simulation-btn');
+        const stopBtn = document.getElementById('stop-simulation-btn');
+        const modeIndicator = document.getElementById('mode-indicator');
+
+        if (mode === 'config') {
+            if (configPanel) configPanel.style.display = 'block';
+            if (simulationPanel) simulationPanel.style.display = 'none';
+            if (startBtn) startBtn.style.display = 'inline-block';
+            if (stopBtn) stopBtn.style.display = 'none';
+            if (modeIndicator) modeIndicator.textContent = 'Configuration Mode';
+            
+            // Render latency config in edit mode
+            if (this.latencyConfigEdit) {
+                this.latencyConfigEdit.render(false);
+            }
+        } else {
+            if (configPanel) configPanel.style.display = 'none';
+            if (simulationPanel) simulationPanel.style.display = 'block';
+            if (startBtn) startBtn.style.display = 'none';
+            if (stopBtn) stopBtn.style.display = 'inline-block';
+            if (modeIndicator) modeIndicator.textContent = 'Simulation Mode';
+            
+            // Render latency config in read-only mode
+            if (this.latencyConfigSimulation) {
+                this.latencyConfigSimulation.render(true);
+            }
+        }
+    }
+
+    startSimulation() {
+        this.setMode('simulation');
+        this.showMessage('Simulation started! You can now issue instructions and execute them.', 'success');
+    }
+
+    stopSimulation() {
+        this.stopRun();
+        this.setMode('config');
+        this.showMessage('Returned to configuration mode', 'info');
     }
 
     setupEventListeners() {
@@ -126,6 +189,17 @@ class TomasuloSimulator {
         document.getElementById('step-btn').addEventListener('click', () => this.stepExecution());
         document.getElementById('run-btn').addEventListener('click', () => this.toggleRun());
         document.getElementById('reset-btn').addEventListener('click', () => this.resetSimulation());
+        
+        // Mode control buttons
+        const startSimBtn = document.getElementById('start-simulation-btn');
+        if (startSimBtn) {
+            startSimBtn.addEventListener('click', () => this.startSimulation());
+        }
+        
+        const stopSimBtn = document.getElementById('stop-simulation-btn');
+        if (stopSimBtn) {
+            stopSimBtn.addEventListener('click', () => this.stopSimulation());
+        }
 
         // Update source 2 visibility based on operation
         document.getElementById('operation-select').addEventListener('change', (e) => {
@@ -136,6 +210,12 @@ class TomasuloSimulator {
     }
 
     issueInstruction() {
+        // Only allow issuing in simulation mode
+        if (this.simulationMode === 'config') {
+            this.showMessage('Please start simulation first before issuing instructions', 'error');
+            return;
+        }
+
         const operation = document.getElementById('operation-select').value;
         const destReg = document.getElementById('dest-register').value;
         const src1Reg = document.getElementById('src1-register').value;
@@ -450,6 +530,8 @@ class TomasuloSimulator {
     resetSimulation() {
         this.stopRun();
         this.initializeSystem();
+        this.initializeLatencyConfig(); // Re-initialize latency config
+        this.setMode('config'); // Return to config mode
         this.updateDisplay();
         this.showMessage('Simulation reset', 'info');
         

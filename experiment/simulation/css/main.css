@@ -304,3 +304,63 @@
   outline: 3px solid var(--accent-color);
   outline-offset: 2px;
 }
+/* Latency Configuration Styling */
+.latency-config-container {
+  margin: 1rem 0;
+}
+
+.latency-items {
+  margin: 0.5rem 0;
+}
+
+.latency-input {
+  max-width: 80px;
+  text-align: center;
+  font-weight: 600;
+}
+
+.latency-input:not([readonly]):hover {
+  border-color: var(--primary-color);
+}
+
+.latency-input:not([readonly]):focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 0.125em rgba(23, 102, 150, 0.25);
+}
+
+.latency-input.is-static {
+  background-color: #f5f5f5;
+  cursor: not-allowed;
+}
+
+/* Mode Indicator */
+#mode-indicator {
+  font-weight: bold;
+  color: var(--primary-color);
+}
+
+/* Panel visibility */
+#config-mode-panel,
+#simulation-mode-panel {
+  transition: opacity 0.3s ease;
+}
+
+/* Responsive latency config */
+@media (max-width: 768px) {
+  .field.is-horizontal {
+    display: block !important;
+  }
+  
+  .field-label.is-normal {
+    text-align: left !important;
+    margin-bottom: 0.5rem;
+  }
+  
+  .field-body {
+    margin-left: 0 !important;
+  }
+  
+  .latency-input {
+    max-width: 100%;
+  }
+}
