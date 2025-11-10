@@ -16,6 +16,7 @@ Follow these step-by-step instructions to understand and explore the Tomasulo Al
    - Adjust any value between 1-100 cycles to experiment with different scenarios
 
 3. **Start the Simulation**
+
    - Once you've configured the latencies to your preference, click **"Start Simulation"**
    - This switches to **Simulation Mode** where latencies become read-only
    - You can now begin issuing and executing instructions
@@ -89,12 +90,12 @@ Follow these step-by-step instructions to understand and explore the Tomasulo Al
 1. **Demonstrate Independent Instructions**
 
    - Issue a sequence like:
-     ```
+     <pre>
      ADD R1, R2, R3      // Takes 2 cycles
      MUL R4, R5, R6      // Takes 10 cycles
      SUB R7, R8, R9      // Takes 2 cycles, independent
      ADD R10, R11, R12   // Takes 2 cycles, independent
-     ```
+     </pre>
 
 2. **Observe Out-of-Order Completion**
    - Start execution and watch the timeline
@@ -107,12 +108,12 @@ Follow these step-by-step instructions to understand and explore the Tomasulo Al
 1. **Create False Dependencies**
 
    - Issue instructions that demonstrate WAR and WAW hazards:
-     ```
+     <pre>
      ADD R1, R2, R3      // Write R1
      SUB R4, R1, R5      // Read R1 (RAW - true dependency)
      MUL R1, R6, R7      // Write R1 (WAW - false dependency)
      ADD R8, R4, R1      // Read R1 (should get MUL result)
-     ```
+     </pre>
 
 2. **Analyze Renaming Behavior**
    - Watch how different writes to R1 get different reservation station tags
