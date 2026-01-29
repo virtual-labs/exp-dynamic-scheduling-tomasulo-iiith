@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tomasulo Algorithm Dynamic Scheduling Simulator</title>
+    <link rel="stylesheet" href="./css/main.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- Content Container -->
+    <div class="content-container" id="content-container">
+        <!-- 1. Title -->
+        <section class="hero is-primary">
+            <div class="hero-body">
+                <div class="container has-text-centered">
+                    <h1 class="title is-2">Tomasulo Algorithm Simulator</h1>
+                    <p class="subtitle is-5">
+                        Interactive demonstration of dynamic scheduling and out-of-order execution 
+                        using the Tomasulo algorithm. Explore register renaming, reservation stations, and instruction-level parallelism.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Mode Control Panel -->
+        <section class="section">
+            <div class="container">
+                <div class="notification is-primary">
+                    <div class="level">
+                        <div class="level-left">
+                            <div class="level-item">
+                                <div>
+                                    <p class="heading">Current Mode</p>
+                                    <p class="title is-5" id="mode-indicator">Configuration Mode</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="level-right">
+                            <div class="level-item">
+                                <button id="start-simulation-btn" class="button is-success is-large">
+                                    <i class="fas fa-play"></i>&nbsp;Start Simulation
+                                </button>
+                                <button id="stop-simulation-btn" class="button is-danger is-large" style="display: none;">
+                                    <i class="fas fa-stop"></i>&nbsp;Stop Simulation
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Configuration Mode Panel -->
+        <div id="config-mode-panel">
+            <!-- Latency Configuration -->
+            <section class="section">
+                <div class="container">
+                    <div class="box">
+                        <h3 class="title is-4 has-text-centered">⚙️ Execution Latency Configuration</h3>
+                        <p class="subtitle is-6 has-text-centered">Configure how many cycles each instruction type takes to execute</p>
+                        <div id="latency-config-edit">
+                            <!-- Latency configuration will be rendered here -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Quick Start Guide -->
+            <section class="section">
+                <div class="container">
+                    <div class="box">
+                        <h3 class="title is-4 has-text-centered">📚 Quick Start Guide</h3>
+                        <div class="columns">
+                            <div class="column">
+                                <div class="content">
+                                    <h4 class="subtitle is-5">1. Configure Latencies</h4>
+                                    <p>Set execution latencies for different instruction types above. These determine how many cycles each operation takes.</p>
+                                </div>
+                            </div>
+                            <div class="column">
+                                <div class="content">
+                                    <h4 class="subtitle is-5">2. Start Simulation</h4>
+                                    <p>Click "Start Simulation" to begin. You'll then be able to issue instructions and observe the Tomasulo algorithm in action.</p>
+                                </div>
+                            </div>
+                            <div class="column">
+                                <div class="content">
+                                    <h4 class="subtitle is-5">3. Issue & Execute</h4>
+                                    <p>Add instructions, then use "Step" to advance one cycle or "Run" for automatic execution.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- Simulation Mode Panel -->
+        <div id="simulation-mode-panel" style="display: none;">
+
+        <!-- 2. How to Use This Simulator -->
+        <section class="section">
+            <div class="container">
+                <div class="box">
+                    <h2 class="title is-3 has-text-centered">How to Use This Simulator</h2>
+                    
+                    <div class="columns">
+                        <div class="column is-half">
+                            <div class="content">
+                                <h4 class="subtitle is-5">Key Concepts:</h4>
+                                <ul>
+                                    <li><strong>Reservation Stations:</strong> Buffer instructions and implement register renaming</li>
+                                    <li><strong>Common Data Bus:</strong> Broadcasts results to all waiting instructions</li>
+                                    <li><strong>Register Renaming:</strong> Eliminates false dependencies (WAR/WAW)</li>
+                                    <li><strong>Out-of-Order Execution:</strong> Instructions complete as soon as operands are ready</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="column is-half">
+                            <div class="content">
+                                <h4 class="subtitle is-5">Instructions:</h4>
+                                <ol>
+                                    <li>Select instruction type (ADD, SUB, MUL, DIV, LOAD, STORE)</li>
+                                    <li>Specify destination and source registers</li>
+                                    <li>For memory operations, provide address/offset</li>
+                                    <li>Click "Issue Instruction" to add to pipeline</li>
+                                    <li>Use "Step" or "Run" to execute instructions</li>
+                                    <li>Observe reservation stations and register renaming</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. Instruction Input Panel -->
+        <section class="section">
+            <div class="container">
+                <div class="box">
+                    <h3 class="title is-4 has-text-centered">Instruction Input Panel</h3>
+                    
+                    <div class="columns is-multiline">
+                        <div class="column is-half-tablet is-one-quarter-desktop">
+                            <div class="field">
+                                <label class="label">Operation</label>
+                                <div class="control">
+                                    <div class="select is-fullwidth">
+                                        <select id="operation-select">
+                                            <option value="ADD">ADD (Integer Add)</option>
+                                            <option value="SUB">SUB (Integer Subtract)</option>
+                                            <option value="MUL">MUL (Multiply)</option>
+                                            <option value="DIV">DIV (Divide)</option>
+                                            <option value="LOAD">LOAD (Load from Memory)</option>
+                                            <option value="STORE">STORE (Store to Memory)</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="column is-half-tablet is-one-quarter-desktop">
+                            <div class="field">
+                                <label class="label">Destination</label>
+                                <div class="control">
+                                    <div class="select is-fullwidth">
+                                        <select id="dest-register">
+                                            <option value="R0">R0</option>
+                                            <option value="R1">R1</option>
+                                            <option value="R2">R2</option>
+                                            <option value="R3">R3</option>
+                                            <option value="R4">R4</option>
+                                            <option value="R5">R5</option>
+                                            <option value="R6">R6</option>
+                                            <option value="R7">R7</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="column is-half-tablet is-one-quarter-desktop">
+                            <div class="field">
+                                <label class="label">Source 1</label>
+                                <div class="control">
+                                    <div class="select is-fullwidth">
+                                        <select id="src1-register">
+                                            <option value="R0">R0</option>
+                                            <option value="R1">R1</option>
+                                            <option value="R2">R2</option>
+                                            <option value="R3">R3</option>
+                                            <option value="R4">R4</option>
+                                            <option value="R5">R5</option>
+                                            <option value="R6">R6</option>
+                                            <option value="R7">R7</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="column is-half-tablet is-one-quarter-desktop">
+                            <div class="field">
+                                <label class="label">Source 2</label>
+                                <div class="control">
+                                    <div class="select is-fullwidth">
+                                        <select id="src2-register">
+                                            <option value="R0">R0</option>
+                                            <option value="R1">R1</option>
+                                            <option value="R2">R2</option>
+                                            <option value="R3">R3</option>
+                                            <option value="R4">R4</option>
+                                            <option value="R5">R5</option>
+                                            <option value="R6">R6</option>
+                                            <option value="R7">R7</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="columns">
+                        <div class="column is-half">
+                            <div class="field">
+                                <label class="label">Memory Address/Offset (for LOAD/STORE)</label>
+                                <div class="control">
+                                    <input type="number" id="memory-address" class="input" placeholder="Enter address" value="0">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="column is-half">
+                            <div class="field">
+                                <label class="label">Immediate Value (optional)</label>
+                                <div class="control">
+                                    <input type="number" id="immediate-value" class="input" placeholder="Immediate value">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="has-text-centered">
+                        <button id="issue-btn" class="button is-primary is-large">
+                            <i class="fas fa-plus"></i>&nbsp;Issue Instruction
+                        </button>
+                        <button id="step-btn" class="button is-info is-large">
+                            <i class="fas fa-step-forward"></i>&nbsp;Step
+                        </button>
+                        <button id="run-btn" class="button is-success is-large">
+                            <i class="fas fa-play"></i>&nbsp;Run
+                        </button>
+                        <button id="reset-btn" class="button is-warning is-large">
+                            <i class="fas fa-refresh"></i>&nbsp;Reset
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. System Status Overview -->
+        <section class="section">
+            <div class="container">
+                <div class="box">
+                    <h3 class="title is-4 has-text-centered">System Status</h3>
+                    <div class="columns">
+                        <div class="column">
+                            <div class="notification is-info has-text-centered">
+                                <strong>Clock Cycle:</strong> <span id="clock-cycle">0</span>
+                            </div>
+                        </div>
+                        <div class="column">
+                            <div class="notification is-success has-text-centered">
+                                <strong>Instructions Issued:</strong> <span id="instructions-issued">0</span>
+                            </div>
+                        </div>
+                        <div class="column">
+                            <div class="notification is-warning has-text-centered">
+                                <strong>Instructions Completed:</strong> <span id="instructions-completed">0</span>
+                            </div>
+                        </div>
+                        <div class="column">
+                            <div class="notification is-primary has-text-centered">
+                                <strong>IPC:</strong> <span id="ipc">0.00</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 5. Reservation Stations -->
+        <section class="section">
+            <div class="container">
+                <h3 class="title is-4 has-text-centered">Reservation Stations</h3>
+                
+                <div class="columns">
+                    <!-- Add/Sub Reservation Stations -->
+                    <div class="column is-one-third">
+                        <div class="box">
+                            <h4 class="title is-5 has-text-centered">Add/Sub Units</h4>
+                            <div class="table-container">
+                                <table class="table is-fullwidth is-striped reservation-table">
+                                    <thead>
+                                        <tr class="has-background-success">
+                                            <th>Tag</th>
+                                            <th>Busy</th>
+                                            <th>Op</th>
+                                            <th>Vj</th>
+                                            <th>Vk</th>
+                                            <th>Qj</th>
+                                            <th>Qk</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="addsub-stations">
+                                        <!-- Add/Sub reservation stations will be populated here -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Multiply/Divide Reservation Stations -->
+                    <div class="column is-one-third">
+                        <div class="box">
+                            <h4 class="title is-5 has-text-centered">Multiply/Divide Units</h4>
+                            <div class="table-container">
+                                <table class="table is-fullwidth is-striped reservation-table">
+                                    <thead>
+                                        <tr class="has-background-warning">
+                                            <th>Tag</th>
+                                            <th>Busy</th>
+                                            <th>Op</th>
+                                            <th>Vj</th>
+                                            <th>Vk</th>
+                                            <th>Qj</th>
+                                            <th>Qk</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="muldiv-stations">
+                                        <!-- Multiply/Divide reservation stations will be populated here -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Load/Store Reservation Stations -->
+                    <div class="column is-one-third">
+                        <div class="box">
+                            <h4 class="title is-5 has-text-centered">Load/Store Units</h4>
+                            <div class="table-container">
+                                <table class="table is-fullwidth is-striped reservation-table">
+                                    <thead>
+                                        <tr class="has-background-info">
+                                            <th>Tag</th>
+                                            <th>Busy</th>
+                                            <th>Op</th>
+                                            <th>Address</th>
+                                            <th>Value</th>
+                                            <th>Q</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="loadstore-stations">
+                                        <!-- Load/Store reservation stations will be populated here -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 6. Register Status and Functional Units -->
+        <section class="section">
+            <div class="container">
+                <div class="columns">
+                    <!-- Register Status -->
+                    <div class="column is-half">
+                        <div class="box">
+                            <h4 class="title is-5 has-text-centered">Register Alias Table</h4>
+                            <div class="table-container">
+                                <table class="table is-fullwidth is-striped">
+                                    <thead>
+                                        <tr class="has-background-primary">
+                                            <th>Register</th>
+                                            <th>Value</th>
+                                            <th>Qi (Reservation Station)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="register-status">
+                                        <!-- Register status will be populated here -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Functional Units Status -->
+                    <div class="column is-half">
+                        <div class="box">
+                            <h4 class="title is-5 has-text-centered">Functional Units Status</h4>
+                            <div class="table-container">
+                                <table class="table is-fullwidth is-striped">
+                                    <thead>
+                                        <tr class="has-background-danger">
+                                            <th>Unit</th>
+                                            <th>Status</th>
+                                            <th>Instruction</th>
+                                            <th>Cycles Left</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="functional-units">
+                                        <!-- Functional units status will be populated here -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 7. Instruction Timeline -->
+        <section class="section">
+            <div class="container">
+                <div class="box">
+                    <h3 class="title is-4 has-text-centered">Instruction Timeline</h3>
+                    
+                    <div id="timeline-empty" class="notification is-info has-text-centered">
+                        <p>No instructions issued yet. Add instructions to see the execution timeline.</p>
+                    </div>
+                    
+                    <div id="timeline-container" class="table-container" style="display: none;">
+                        <table class="table is-fullwidth is-striped timeline-table">
+                            <thead>
+                                <tr class="has-background-success">
+                                    <th>PC</th>
+                                    <th>Instruction</th>
+                                    <th>Issue</th>
+                                    <th>Execute Start</th>
+                                    <th>Execute End</th>
+                                    <th>Write Back</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="timeline-body">
+                                <!-- Timeline entries will be populated here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 8. Common Data Bus Monitor -->
+        <section class="section">
+            <div class="container">
+                <div class="box">
+                    <h3 class="title is-4 has-text-centered">Common Data Bus Activity</h3>
+                    
+                    <div id="cdb-empty" class="notification is-info has-text-centered">
+                        <p>No CDB activity yet. Execute instructions to see result broadcasts.</p>
+                    </div>
+                    
+                    <div id="cdb-container" style="display: none;">
+                        <div class="content">
+                            <h5 class="subtitle is-6">Recent Broadcasts:</h5>
+                            <div id="cdb-log" class="content">
+                                <!-- CDB broadcasts will be shown here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Latency Configuration (Simulation Mode - Read Only) -->
+        <section class="section">
+            <div class="container">
+                <div class="box">
+                    <h3 class="title is-4 has-text-centered">⚙️ Execution Latency Configuration</h3>
+                    <p class="subtitle is-6 has-text-centered">Current latency settings (read-only during simulation)</p>
+                    <div id="latency-config-simulation">
+                        <!-- Latency configuration will be rendered here (read-only) -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        </div> <!-- End simulation-mode-panel -->
+
+        <!-- 9. Performance Analysis -->
+        <section class="section">
+            <div class="container">
+                <div class="box">
+                    <h3 class="title is-4 has-text-centered">Performance Analysis</h3>
+                    
+                    <div class="columns">
+                        <div class="column">
+                            <div class="notification is-light">
+                                <strong>Structural Hazards:</strong> <span id="structural-hazards">0</span>
+                            </div>
+                        </div>
+                        <div class="column">
+                            <div class="notification is-light">
+                                <strong>RAW Dependencies:</strong> <span id="raw-dependencies">0</span>
+                            </div>
+                        </div>
+                        <div class="column">
+                            <div class="notification is-light">
+                                <strong>WAR Eliminated:</strong> <span id="war-eliminated">0</span>
+                            </div>
+                        </div>
+                        <div class="column">
+                            <div class="notification is-light">
+                                <strong>WAW Eliminated:</strong> <span id="waw-eliminated">0</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="content">
+                        <h5 class="subtitle is-6">Resource Utilization:</h5>
+                        <div class="columns">
+                            <div class="column">
+                                <progress id="addsub-utilization" class="progress is-success" value="0" max="100">0%</progress>
+                                <p class="has-text-centered">Add/Sub Units</p>
+                            </div>
+                            <div class="column">
+                                <progress id="muldiv-utilization" class="progress is-warning" value="0" max="100">0%</progress>
+                                <p class="has-text-centered">Mul/Div Units</p>
+                            </div>
+                            <div class="column">
+                                <progress id="loadstore-utilization" class="progress is-info" value="0" max="100">0%</progress>
+                                <p class="has-text-centered">Load/Store Units</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Scripts -->
+    <script src="./js/utils/types.js"></script>
+    <script src="./js/components/LatencyConfig.js"></script>
+    <script src="./js/main.js"></script>
+<script src="../assets/js/iframeResize.js"></script>
+        
+        </body>
+</html>
